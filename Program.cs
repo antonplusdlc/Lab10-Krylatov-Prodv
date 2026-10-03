@@ -123,3 +123,97 @@ for (int i = 0; i < products.Length; i++)
 
 Console.WriteLine($"{0.256:P0}");
 Console.WriteLine($"{255:X}");
+
+// Итоговая задача
+
+bool TryParsePurchase(string input, out string name, out double price, out int cnt)
+{
+    name = "";
+    price = 0;
+    cnt = 0;
+
+    string[] da = input.Split(',');
+
+    if (da.Length != 3) return false;
+
+    name = da[0].Trim();
+    string priceTxt = da[1].Trim();
+    string cntTxt = da[2].Trim();
+
+    if (string.IsNullOrEmpty(name)) return false;
+
+    if (!double.TryParse(priceTxt, out price)) return false;
+
+    if (price < 0) return false;
+
+    if (!int.TryParse(cntTxt, out cnt)) return false;
+
+    if (cnt <= 0) return false;
+
+    return true;
+}
+
+string BuildRep(string[] names, double[] prices, int[] cnts, int cnt, double total)
+{
+    StringBuilder rep = new();
+
+    rep.AppendLine("========== ПОКУПКИ ==========")
+    .AppendLine()
+    .AppendLine($"{"Товар", -18} {"Кол-во", 7} {"Цена", 10} {"Сумма", 10}")
+    .AppendLine(new string('-', 48));
+
+    for (int i = 0; i < cnt; i++)
+    {
+        double sum = prices[i] * cnts[i];
+
+        rep.AppendLine($"{names[i], -18} {cnts[i], 7} {prices[i], 10:N2} {sum, 10:N2}");
+    }
+
+    rep.AppendLine()
+    .AppendLine($"{"ИТОГО:", -37} {total, 10:N2}");
+
+    return rep.ToString();
+}
+
+Console.WriteLine();
+
+Console.Write("Введите кол-во товаров: ");
+int cnt;
+
+while (!int.TryParse(Console.ReadLine(), out cnt) || cnt <= 0)
+{
+    Console.Write("ENTER INT > 0!!!");
+}
+
+string[] names = new string[cnt];
+double[] pricess = new double[cnt];
+int[] cnts = new int[cnt];
+
+double tot = 0;
+
+for (int i = 0; i < cnt; i++)
+{
+    while (true)
+    {
+        Console.Write($"Товар {i + 1}: ");
+        string input = Console.ReadLine();
+
+        if (TryParsePurchase(input, out string name, out double price, out int cntt))
+        {
+            names[i] = name;
+            pricess[i] = price;
+            cnts[i] = cntt;
+
+            tot += price * cntt;
+
+            break;
+        }
+
+        Console.WriteLine("ERROR! название,цена,количество!!!");
+    }
+}
+
+string repp = BuildRep(names, pricess, cnts, cnt, tot);
+
+Console.WriteLine();
+Console.WriteLine(repp);
