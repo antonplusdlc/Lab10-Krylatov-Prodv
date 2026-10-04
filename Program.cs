@@ -217,3 +217,96 @@ string repp = BuildRep(names, pricess, cnts, cnt, tot);
 
 Console.WriteLine();
 Console.WriteLine(repp);
+
+Console.WriteLine();
+
+// Самостоятельные задания
+
+// Телефон по шаблону
+
+Console.Write("enter phone number (11 symbols): ");
+string num = Console.ReadLine();
+
+if (num.Length != 11) return; // мне лень простите
+
+Console.WriteLine($"+7 ({num.Substring(1, 3)}) {num.Substring(4, 3)}-{num.Substring(7, 2)}-{num.Substring(9, 2)}");
+
+// Слова предложения
+
+Console.WriteLine();
+Console.Write("Enter predloshenie: ");
+string predl = Console.ReadLine();
+
+string[] predlm = predl.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+Console.WriteLine($"кол-во слов: {predlm.Length}");
+
+if (predlm.Length > 0)
+{
+    string longest = predlm[0];
+
+    for (int i = 1; i < predlm.Length; i++)
+    {
+        if (predlm[i].Length > longest.Length) longest = predlm[i];
+    }
+
+    Console.WriteLine($"longest word: {longest}");
+
+    Console.Write("enter bukvu: ");
+    string da1 = Console.ReadLine();
+
+    if (da1.Length > 0)
+    {
+        char let = da1[0];
+
+        Console.WriteLine($"слова на букву {let}");
+
+        bool f = false;
+
+        for (int i = 0; i < predlm.Length; i++)
+        {
+            if (predlm[i].Length > 0 && char.ToLower(predlm[i][0]) == char.ToLower(let))
+            {
+                Console.WriteLine(predlm[i]);
+                f = true;
+            }
+        }
+
+        if (!f) Console.WriteLine("net slov takix");
+    }
+}
+else Console.WriteLine("slov net.");
+
+// Маскирование данных
+
+string MaskData(string text)
+{
+    StringBuilder result = new();
+
+    int dgs = 0;
+
+    for (int i = 0; i < text.Length; i++)
+    {
+        if (char.IsDigit(text[i])) dgs++;
+    }
+
+    if (dgs <= 4) return text; // если кол-во цифр в строке <= 4, вернем просто исходную строку.
+
+    int dgsNum = 0;
+
+    for (int i = 0; i < text.Length; i++)
+    {
+        if (char.IsDigit(text[i]))
+        {
+            dgsNum++;
+
+            if (dgsNum <= dgs - 4) result.Append('*');
+            else result.Append(text[i]);
+        }
+        else result.Append(text[i]);
+    }
+
+    return result.ToString();
+}
+
+Console.WriteLine(MaskData("1234 5678 9012 3456"));
